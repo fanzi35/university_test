@@ -1,0 +1,341 @@
+\documentclass[UTF-8,a4paper,zihao=-4]{ctexart}
+\usepackage[a4paper,left=3cm,right=2.5cm,top=3cm,bottom=2.5cm]{geometry}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[backend=biber,style=gb7714-2015]{biblatex} 
+\usepackage[labelfont=bf,textfont=bf]{caption}
+\addbibresource{ref.bib} %待补上参考文献 
+\usepackage{amsmath,amssymb}   % 公式
+\usepackage{graphicx}          % 插图
+\usepackage{booktabs}           % 三线表
+\usepackage{hyperref}           % 超链接（最后加载，少数例外）
+\usepackage{placeins}
+\usepackage{subcaption}
+\usepackage{csvsimple}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float}
+\pagestyle{plain} 
+\ctexset{
+  section = {
+    number = \chinese{section},   % 中文数字：一、二、三…
+    format = \zihao{3}\heiti\centering,
+    aftername = \quad,            % 编号和标题之间的空格（可调）
+    % 如果你想变成“一、绪论”（带顿号），把 aftername 改成 \hspace{1em} 或直接写顿号
+  }
+}
+\makeatletter
+\renewcommand{\maketitle}{
+    \begin{center}
+        \vspace*{-2cm}
+        {\zihao{2}\heiti\@title\par}
+    \end{center}
+}
+\makeatother
+
+\makeatletter
+\renewenvironment{abstract}
+{
+    \begin{center}
+        {\zihao{-3}\textbf{摘要}}
+    \end{center}
+    \zihao{-4}
+}
+{}
+\makeatother
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    numbers=left,
+    numberstyle=\tiny,
+    frame=single,
+    breaklines=true,
+    columns=fullflexible
+}
+
+\begin{document}
+
+\title{复杂工况下巷道锚杆预紧力矩的建模与分析}
+\date{}
+\maketitle
+
+\begin{abstract}
+
+    \textbf{针对问题一：}
+
+    \textbf{针对问题二：}
+
+    \textbf{针对问题三：}
+
+    \textbf{针对问题四：}
+
+\noindent \textbf{关键词：}
+\end{abstract}
+
+\newpage
+\section{问题背景与重述}
+\subsection{问题背景}
+巷道围岩支护是防止顶板垮塌，保障设备正常运行，保证矿井高效安全生产的重要手段。 而在众多防护手段中，锚杆支护展现出了强大的优势，其支护原理是通过拧紧锚杆尾端螺母，施加预紧力矩，经由螺纹传动转化为沿杆体轴向的预紧力，进而使围岩由二向受力状态转化为三向受力状态，从而实现主动支护。
+
+在工程中，一般认为预紧力矩越大预紧力越大，且支护效果越好，但实际探究发现，预紧力矩与预紧力并非完全的线性关系，并且还受多种因素影响，因此为了更高效、更科学的配置使用锚杆支护，有必要深入研究预紧力矩与预紧力的转换机制，为此我们将从下面四个问题进行探究。
+\subsection{问题要求}
+\begin{enumerate}
+    \item 在标准实验条件下，锚杆预紧力矩 T 与预紧力 P 通常可近似表示为线性关系$T=K\cdot P\cdot d$，其中 d 为锚杆直径，K 为扭矩系数。但在实际加载初期，受螺纹间隙、垫圈变形及接触面压实等因素影响，二者往往表现出较强的非线性；当预紧力矩超过某一临界值后，系统才逐渐进入稳定的线性工作阶段。
+
+    因此，我们需要利用附件表1中的实验数据建立不同直径锚杆的预紧力矩—预紧力关系数学模型，并计算相应的扭矩系数 K；此外需要进一步结合表2和表3中直径为20 mm锚杆的实测数据，给出由非线性阶段转入线性阶段的临界预紧力矩。
+    
+    \item 当预紧力过小时，锚杆难以发挥有效支护作用；当预紧力过大时，则可能引起锚杆屈服、锚固界面破坏或托盘压入围岩，而钢带可扩大受力面积，从而降低松软围岩发生局部压陷的风险。
+    
+    因此，我们需要依据附录2给出的力学关系和工程约束，建立最大允许预紧力矩$T_{max}$的通用参数化模型，并给出是否需要使用钢带的判定条件；并在此基础上，利用附件表4中的参数分别计算工况A和工况B下的$T_{max}$，并判断两种工况是否需要增设钢带。
+    
+    \item 受煤岩体破碎和钻孔不规则等因素影响，锚杆轴线与围岩表面法线之间可能存在偏心距 e。此时，轴向预紧力会产生附加弯矩，使锚杆螺纹段同时承受拉伸、弯曲和扭转作用，从而增加螺纹根部发生断裂的风险。
+    
+    因此，我们需要根据附录3建立偏心条件下$T_{max}$与 e 的数学模型，并分析名义截面模型的适用范围及局限性；同时，我们还应将偏心受力与附录2中的锚杆强度、锚固能力和围岩压陷等约束结合，分析偏心距e是否会影响约束的有效性，构建综合多种失效模式的修正模型，给出$T_{max}(e)$的表达式并进行数值验证。
+    
+    \item 不同围岩的力学性质差异较大。松软围岩承载能力较低，过大的预紧力容易引起压陷或破坏；坚硬围岩则能够承受更高的支护荷载。若统一采用相同的施工力矩，可能同时造成软岩中过载和硬岩中支护能力利用不足的问题。
+    
+    因此，我们需要以普氏系数 f 表示围岩坚固程度，结合各类失效约束，建立最优预紧力矩$T_{opt}$与f关系的数学模型；此外，还需判断不同围岩区间内的最先限制预紧力矩的主控失效模式，并对模型的有效性和可靠性进行检验。
+    
+\end{enumerate}
+
+\section{问题分析}
+\subsection{问题一分析}
+
+\subsection{问题二分析}
+附录二中已经给出了相关物理模型与工程约束条件“锚杆强度极限”、“锚固系统极限”，而问题一已经给出了预紧力矩与预紧力的数学模型，故我们便可在此基础上建立最大允许预紧力矩$T_{max}$的通用参数化模型，并根据约束条件(3)“围岩压陷极限”，进一步分类讨论具体的通用参数化模型，同时其也是使用钢带的判定条件。在建立好$T_{max}$的通用参数化模型后，便可结合具体参数来计算工况A、B的$T_{max}$并判断是否需要增设钢带。
+
+\subsection{问题三分析}
+附录三中已经给出了偏心条件下相关的力学公式，我们可以依此进行数学推导并建立起对应的数学模型，同时根据力学公式以及推导过程中作出的一些前提假设，来进行对名义截面模型的分析；在分析完后可根据模型来分析偏心距e的影响，至于多种失效模式的修正模型，则可以结合问题二所建数学模型，进行总结修正，并带入数值进行验证。
+
+\subsection{问题四分析}
+附录中并没有明确给出普氏系数f与$T_{opt}$的关系式，但指出了f与单轴抗压强度有关，我们可以查阅相关资料，找到单轴抗压强度与其他相关参数（如弹性模量E）的关系，并以此进一步推导建立联系，最终构建起$T_{opt}$与f的数学模型，并以此进行判断不同围岩条件下的主控失效模式，以及对模型进行有效性验证和可靠性验证。
+
+%%%%%准备工作%%%%%
+\section{初步准备}
+\subsection{模型假设}
+\begin{enumerate}
+    \item 模型对应的围岩主要为单一主体，即分析某类围岩时认为其杂质较少，可以认为杂质不影响围岩主要性质。
+    \item 
+    \item 
+    \item 
+\end{enumerate}
+
+%%表%%
+\subsection{符号说明}
+本文所使用的符号及说明如下表所示。
+\begin{table}[H]
+\centering
+\zihao{5}
+
+\caption{符号说明}
+\begin{tabular}{ccc}
+\toprule
+符号 & 说明 & 单位 \\
+\midrule
+$T$ & 预紧力矩 & $N\cdot m$ \\
+$P$ & 预紧力 & kN \\
+$d$ & 锚杆直径 & mm \\
+$K$ & 扭矩系数\\
+\bottomrule
+\end{tabular}
+
+\vspace{0.5em}
+\parbox{0.9\textwidth}{
+\zihao{5}
+注：其他符号已在相应部分中说明。
+}
+\end{table}
+
+%%%%%模型建立与求解%%%%%
+\section{模型建立与求解}
+\subsection{问题一的模型建立与求解}
+
+\subsection{问题二的模型建立与求解}
+\subsubsection{问题2.1建模与分析}
+由第一问可知，预紧力矩与预紧力有一定的关系，在这里我们利用其成线性关系的部分进行数学模型的建立。由于预紧力矩与预紧力在线性部分是成正比的，所以要找到最大允许预紧力矩$T_{max}$就是找到最大的预紧力$P_{max}$。
+
+由附录二可知，预紧力需要满足下述约束条件：
+\begin{enumerate}
+    \item 锚杆强度极限：预紧力P不得超过锚杆杆体的屈服载荷$P_{yield}$，即
+    \begin{equation}
+        P\le P_{yield}
+    \end{equation}
+    \item 锚固系统极限：预紧力P不得超过锚固剂与围岩的极限粘结力$F_{bond}$，结合$F_{bond}$计算公式可得
+    \begin{equation}
+        P\le F_{bond}=\Pi \cdot D_{hole} \cdot L_{bond} \cdot \tau \cdot 10^{-3}(kN)
+    \end{equation}
+    其中$D_{hole}$为钻孔直径(mm)，$L_{bond}$为有效锚固长度(mm)，$\tau$为围岩与锚固剂界面的剪切强度(MPa)。同时剪切强度$\tau$（单位MPa）与围岩弹性模量E（单位Gpa）还满足以下关系
+    \begin{equation}
+        \tau=0.25E+10
+    \end{equation}
+    \item 围岩压陷极限：当只使用托盘时，托盘对围岩的压入深度$\delta$不能超过允许压入深度$\delta_{max}$，否则需要使用钢带。当仅使用托盘时，压入深度$\delta$可采用Winkler弹性地基模型估算，可得
+    \begin{equation}
+        \delta=\frac{P(1-\nu^2)h_0}{Eb^2}\le \delta_{max}
+    \end{equation}
+\end{enumerate}
+ 
+ 结合上述三个约束，建立在给定地质和支护参数下的最大允许预紧力矩$T_{max}$的通用参数化模型就转化为下述优化问题：
+ \begin{enumerate}
+     \item 当仅使用托盘时
+     \begin{equation}
+\begin{aligned}
+    \max_{T,P}\quad & T \\[1mm]
+    \mathrm{s.t.}\quad
+    & T = KdP,\\
+    & P \leq P_{\mathrm{yield}},\\
+    & P \leq
+    \pi D_{\mathrm{hole}}
+    L_{\mathrm{bond}}
+    (0.25E+10) \cdot 10^{-3},\\
+    & P \leq
+    \frac{\delta_{\max}Eb^2}
+    {(1-\nu^2)h_0},\\
+    & T \geq 0,\quad P \geq 0.
+\end{aligned}
+\label{meigangdai}
+\end{equation}
+
+\item 当可以使用钢带时，由于钢带可以分散压力从而使得压入深度减小，所以在使用钢带时可以认为围岩压陷极限的影响力相比于另外两个极限的影响时次要的，因此可以得到
+\begin{equation}
+\begin{aligned}
+    \max_{T,P}\quad & T \\[1mm]
+    \mathrm{s.t.}\quad
+    & T = KdP,\\
+    & P \leq P_{\mathrm{yield}},\\
+    & P \leq
+    \pi D_{\mathrm{hole}}
+    L_{\mathrm{bond}}
+    (0.25E+10) \cdot 10^{-3},\\
+    & T \geq 0,\quad P \geq 0.
+\end{aligned}
+\label{yougangdai}
+\end{equation}
+\end{enumerate}
+
+其中，当\[P > \frac{\delta_{\max}Eb^2}{(1-\nu^2)h_0}\]时必须使用钢带
+
+同时，由于预紧力矩与预紧力是成正比的，所以对允许的最大预紧力矩$T_{max}$的模型可以进一步转化为
+\begin{enumerate}
+    \item 仅使用托盘时，
+    由优化问题-式~\ref{meigangdai}解得
+    \begin{equation}
+        T_{max}=Kd\min
+    \left\{
+    P_{\mathrm{yield}},
+    \pi D_{\mathrm{hole}}
+    L_{\mathrm{bond}}
+    (0.25E+10) \cdot 10^{-3},
+    \frac{\delta_{\max}Eb^2}
+    {(1-\nu^2)h_0}
+    \right\}
+    \label{jieguo}
+    \end{equation}
+    \item 当可以使用钢带时，由上述优化问题-式~\ref{yougangdai}解得
+    \begin{equation}
+        T_{max}=Kd\min
+    \left\{
+    P_{\mathrm{yield}},
+    \pi D_{\mathrm{hole}}
+    L_{\mathrm{bond}}
+    (0.25E+10) \cdot 10^{-3}
+    \right\}
+    \end{equation}
+    \end{enumerate}
+    
+其中，当
+\begin{equation}
+    \frac{\delta_{\max}Eb^2}{(1-\nu^2)h_0}<\min
+    \left\{
+    P_{\mathrm{yield}},
+    \pi D_{\mathrm{hole}}
+    L_{\mathrm{bond}}
+    (0.25E+10) \cdot 10^{-3}
+    \right\}
+    \label{yby}
+\end{equation}
+时必须使用钢带。
+    
+从上述模型中，我们可以看出是否需要使用钢带，取决于围岩压陷极限对应的预紧力与另外两个极限对应的预紧力之间的关系，若
+\[\frac{\delta_{\max}Eb^2}{(1-\nu^2)h_0}<\min
+    \left\{
+    P_{\mathrm{yield}},
+    \pi D_{\mathrm{hole}}
+    L_{\mathrm{bond}}
+    (0.25E+10) \cdot 10^{-3}
+    \right\}\]
+\textbf{即围岩压陷极限对应的预紧力小于另外两个极限对应的预紧力时，必须使用钢带，反之则不需要使用钢带}。
+
+\subsubsection{问题2.2的求解}
+在问题1.2中我们求出了岩层锚杆的扭矩系数K=0.2136；煤层锚杆的扭矩系数K=0.3005。
+在问题2.1中，我们对最大预紧力矩进行了建模，并讨论了其需要使用钢带的情况，在这一问中，我们只需要将对应的数据代入到上述式~\ref{jieguo}中计算最大预紧力矩，再通过式~\ref{yby}来判断是否需要钢带即可。
+
+将工况A：岩层锚杆的相关数据代入上述式子中可以计算出锚杆强度极限对应预紧力为170 kN，锚固系统极限对应的预紧力为334.265 kN，围岩压陷极限对应的预紧力为400kN，所以\textbf{最大的预紧力$P_{max}=$170kN},\textbf{最大允许预紧力矩$T_{max}=$726.24{N$\cdot$m}}。由于围岩压陷极限对应的预紧力是大于前面求得的最大的预紧力的，所以是\textbf{不需要使用钢带的}。
+
+将工况B：煤层锚杆的相关数据代入上述式子中可以计算出锚杆强度极限对应预紧力为205 kN，锚固系统极限对应的预紧力为169.646 kN，围岩压陷极限对应的预紧力为123.077kN，所以\textbf{在仅使用托盘时最大的预紧力$P_{max}=$123.077kN},\textbf{最大允许预紧力矩$T_{max}=$813.662N$\cdot$m}；\textbf{在允许使用钢带时最大的预紧力$P_{max}=$169.646kN},\textbf{最大允许预紧力矩$T_{max}=$1121.530N$\cdot$m}。同时由于围岩压陷极限对应的预紧力是小于另外两个极限对应的预紧力的，所以是\textbf{需要使用钢带的}。
+\subsection{问题三的模型建立与求解}
+
+\subsection{问题四的模型建立与求解}
+\subsubsection{模型建立}
+由附录1可知：f为普氏系数，表征岩石坚固程度的经验指标，数值越大岩石越坚硬，其与单轴抗压强度$\sigma_c$（单位:Mpa）有如下关系：
+\begin{equation}
+    f=\frac{\sigma_c}{10}
+\end{equation}
+即：
+\begin{equation}
+    \sigma_c=10f
+\end{equation}
+故现在转为寻找$\sigma_c$与弹性模量E的关系。通过查阅文献资料可知，在面对单个同一岩体时，其弹性模量E与其单轴抗压强度$\sigma_c$呈正相关\cite{lin2017ucs}，使用Deere的岩石分类思想\cite{deere1966engineering}，我们可以有如下近似关系：
+\begin{equation}
+    E_i=M_R\sigma_c
+\end{equation}
+其中，$M_R=\frac{E}{\sigma_c}$称为模量比，但是不同岩石的模量比$M_R$并不相同，在Deere-Miller分类中，多数具有较完整、互锁结构的岩石落在:
+\begin{equation*}
+    200\le M_R \le500
+\end{equation*}
+范围内，平均参考线通常取$M_R=300$作为基准值\cite{deere1966engineering}，本文故也采用这一基准值用于模型构建。
+
+
+
+%%%%%评价%%%%%
+\section{模型评价}
+\subsection{模型的优点}
+
+\subsection{模型的缺点}
+
+%%%%%总结%%%%%
+\section{总结}
+
+%%%%%参考文献%%%%%
+\begin{thebibliography}{99}   % 99 是最大编号宽度
+
+\bibitem{lin2017ucs}
+林斌，徐冬.
+不同岩性岩石的单轴抗压强度与弹性模量关系[J].
+煤矿安全，2017，48(3)：160--162，166.
+DOI: 10.13347/j.cnki.mkaq.2017.03.043.
+
+\bibitem{deere1966engineering}
+DEERE D U, MILLER R P.
+Engineering Classification and Index Properties for Intact Rock[R].
+Albuquerque: Air Force Weapons Laboratory, 1966.
+
+\end{thebibliography}
+
+\section*{附录}
+\appendix
+
+\section{文件清单}
+
+\noindent{支撑材料的文件列表清单：}
+\begin{enumerate}
+    \item 
+    \item 
+    \item 
+    \item 
+\end{enumerate}
+
+\section{代码}
+\noindent{问题一代码}
+\lstinputlisting[language=Python]{}
+
+\end{document}
