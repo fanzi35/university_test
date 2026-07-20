@@ -407,7 +407,7 @@ T=6.010P,\qquad R^2=0.9969
     P_{\mathrm{yield}},
     \Pi D_{\mathrm{hole}}
     L_{\mathrm{bond}}
-    (0.25E+10) \cdot 10^{-3}
+    (0.25E+1) \cdot 10^{-3}
     \right\}
     \label{yby}
 \end{equation}
@@ -419,7 +419,7 @@ T=6.010P,\qquad R^2=0.9969
     P_{\mathrm{yield}},
     \Pi D_{\mathrm{hole}}
     L_{\mathrm{bond}}
-    (0.25E+10) \cdot 10^{-3}
+    (0.25E+1) \cdot 10^{-3}
     \right\}\]
 \textbf{即围岩压陷极限对应的预紧力小于另外两个极限对应的预紧力时，必须使用钢带，反之则不需要使用钢带}。
 
@@ -511,7 +511,7 @@ T=6.010P,\qquad R^2=0.9969
     \right\}
     \end{equation}
     \item 锚固系统约束：这一约束主要来自2锚固剂与围岩的极限粘结力$F_{bond}$，而$F_{bond}$的计算过程中所用的钻孔直径，有效锚固长度和围岩与锚固剂界面的剪切强度与偏心距e无明显关联，无需修正。
-    \item 围岩压陷极限：偏心距e的存在使得托盘不仅受到轴向压力P还会受到由偏心距e引起的附加弯矩M=Pe，假设托盘为边长为b的方形，在托盘与围岩保持完全接触、接触压力沿偏心方向线性变化的条件下，最大接触压强可表示为\cite{ivan2010eccentric}
+    \item 围岩压陷极限：偏心距e的存在使得托盘不仅受到轴向压力P还会受到由偏心距e引起的附加弯矩M=Pe，假设托盘为边长为b的方形，在托盘与围岩保持完全接触、接触压力沿偏心方向线性变化的条件下，接触压强可表示为\cite{ivan2010eccentric}
     \begin{equation}
         q_i
     =
@@ -521,11 +521,91 @@ T=6.010P,\qquad R^2=0.9969
         \frac{x_i e_x}{i_y^2}
         +
         \frac{y_i e_y}{i_x^2}
+    \right)
+    \end{equation}
+    其中A为承压面积，$e_x,e_y$为两个方向上的偏心距，$x_i,y_i$为计算点相对于承压面形心的坐标，$i_x,i_y$为承压面关于相应轴的回转半径。
+
+    为了简化计算，我们假设预紧力只往一个方向偏心，即$e_x=e,e_y=0$，将式子进一步化简为
+    \begin{equation}
+        q(x)
+    =
+    \frac{P}{A}
+    \left(
+        1+
+        \frac{x e}{i_y^2}
+    \right)
+    \end{equation}
+    由于托盘是边长为b的方形，所以承压面积\[A=b^2\]关于 y 轴的截面惯性矩为\[I_y=\frac{b^4}{12}\]回转半径满足\[i_y^2=\frac{I_y}{A}=\frac{b^2}{12}\]
+    将上述式子进行整理，得到
+    \begin{equation}
+        q(x)
+    =
+    \frac{P}{b^2}
+    \left(
+        1+
+        \frac{12x e}{b^2}
     \right),
-    \label{eq:eccentric-pressure-general}
+    \end{equation}
+    不难看出，最大接触压强位于接触边缘，此时$x=\frac{b}{2}$,所以最大压强可表示为
+    \begin{equation}
+        q(x)
+    =
+    \frac{P}{b^2}
+    \left(
+        1+
+        \frac{6e}{b}
+    \right),
+    \end{equation}
+    由附录二可以看出，压入深度$\delta$与接触压强成正比，所以该约束应修正为
+    \begin{equation}
+        \delta=\frac{P(1+\frac{6e}{b})(1-\nu^2)h_0}{Eb^2}\le \delta_{max}
+    \end{equation}
+    整理可得
+    \begin{equation}
+        P\le\frac{\delta_{\max}Eb^2}{(1+\frac{6e}{b})(1-\nu^2)h_0},
     \end{equation}
     
 \end{enumerate}
+结合上述约束修正和问题二的建模思路，我们不难得出此时最大允许预紧力矩$T_{max}(e)$的数学表达式为：
+\begin{enumerate}
+    \item 仅使用托盘时
+    \begin{equation}
+        T_{max}(e)=Kd\min
+    \left\{
+    P_{\mathrm{yield}},
+    \frac{\Pi d_e^3[\sigma]\cdot 10^{-3}}{4\sqrt{(d_e+8e)^2+48K_s^2K^2d^2}} ,
+   F_{bond},
+    \frac{\delta_{\max}Eb^2}{(1+\frac{6e}{b})(1-\nu^2)h_0}
+    \right\}
+    \end{equation}
+    其中\[F_{bond}=\Pi D_{\mathrm{hole}}
+    L_{\mathrm{bond}}
+    (0.25E+1) \cdot 10^{-3}\]
+    \item 可以使用钢带时
+    \begin{equation}
+        T_{max}(e)=Kd\min
+    \left\{
+    P_{\mathrm{yield}},
+    \frac{\Pi d_e^3[\sigma]\cdot 10^{-3}}{4\sqrt{(d_e+8e)^2+48K_s^2K^2d^2}} ,
+   \Pi D_{\mathrm{hole}}
+    L_{\mathrm{bond}}
+    (0.25E+1) \cdot 10^{-3}
+    \right\}
+    \end{equation}
+    其中当\[\frac{\delta_{\max}Eb^2}{(1+\frac{6e}{b})(1-\nu^2)h_0}\le \min
+    \left\{
+    P_{\mathrm{yield}},
+    \frac{\Pi d_e^3[\sigma]\cdot 10^{-3}}{4\sqrt{(d_e+8e)^2+48K_s^2K^2d^2}} ,
+   \Pi D_{\mathrm{hole}}
+    L_{\mathrm{bond}}
+    (0.25E+1)10^{-3}
+    \right\}\]时，必须使用钢带。
+\end{enumerate}
+
+接下来对仅使用托盘的情况，参照问题二所用的表四提供的参数以及附录三提供的参数进行数值验证。
+我们将参数代入上面建立的模型中，对偏心距e取不同值分别得出岩层锚杆和煤层锚杆最大预紧力矩$T_{max}(e)$随e变化曲线图如下所示
+
+
 
 \subsection{问题四的模型建立与求解}
 \subsubsection{模型建立}
@@ -580,7 +660,7 @@ T=6.010P,\qquad R^2=0.9969
 
     \item 对于围岩压陷极限约束，同样的问题二已经给出了约束关系式~\ref{q4-lim3-raw}，将式~\ref{q4-Eandf}带入可得：
     \begin{equation}
-        P\le \frac{10\delta_{max}\cdot \eta\cdot M_Rf\cdot 10^{-2}\cdot b^2}{(1-\nu^2)h_o}
+        P\le \frac{0.01\delta_{max}\cdot \eta\cdot M_Rf\cdot b^2}{(1-\nu^2)h_o}
     \label{q4-lim3}
     \end{equation}
     可见该约束下，P的上界也是随着f的增大而增大。
@@ -589,12 +669,12 @@ T=6.010P,\qquad R^2=0.9969
 至此我们得到了三项约束关系，原问题则转换为如下优化问题：
 \begin{equation}
 \begin{aligned}
-    \max_{f}\quad & T \\[1mm]
+    \max_{T,P}\quad & T \\[1mm]
     \mathrm{s.t.}\quad
     & T=Kd\cdot P ,\\
     & P\le P_{yield},\\
     & P\le \Pi\cdot D_{hole}\cdot L_{bond}\cdot (0.25\eta M_Rf\cdot 10^{-2}+1.0)\cdot 10^{-3},\\
-    & P\le \frac{10\delta_{max}\cdot \eta\cdot M_Rf\cdot 10^{-2}\cdot b^2}{(1-\nu^2)h_o}.
+    & P\le \frac{0.01\delta_{max}\cdot \eta\cdot M_Rf\cdot b^2}{(1-\nu^2)h_o}.
 \end{aligned}
 \end{equation}
 记三项约束等号取值分别为：
@@ -602,22 +682,26 @@ T=6.010P,\qquad R^2=0.9969
 \begin{aligned}
     & P_1=P_{yield},\\
     & P_2=\Pi\cdot D_{hole}\cdot L_{bond}\cdot (0.25\eta M_Rf\cdot 10^{-2}+1.0)\cdot 10^{-3},\\
-    & P_3=\frac{10\delta_{max}\cdot \eta\cdot M_Rf\cdot 10^{-3}\cdot b^2}{(1-\nu^2)h_o},\\
+    & P_3=\frac{0.01\delta_{max}\cdot \eta\cdot M_Rf\cdot b^2}{(1-\nu^2)h_o},\\
 \end{aligned}
 \end{equation*}
 
-则有:
+则得\begin{equation}
+    T_{max}=Kd\cdot \min(P_1,P_2,P_3)
+\end{equation}
+可取使支护效果较优而不触发任何失效约束的预紧力矩 :
 \begin{equation}
-    T_{opt}=Kd\cdot \min(P_1,P_2,P_3)
+    T_{opt}=\gamma T_{max}=\gamma Kd\cdot \min(P_1,P_2,P_3)
 \label{q4-Topt}
 \end{equation}
+其中，$\gamma\in(0,1]$为安全裕度系数，用于确保$T_{opt}$能距离某个主控失效约束边界上仍有裕度，以确保模型不触发任何失效约束。在后续有效性、可靠性验证中，我们采用$\gamma=0.8$的安全裕度系数来证明模型在大部分情况下是有效且可靠的。
 
 \subsubsection{失效分析}
 已知$P_1$为上界约束，则优先考虑$P_2$与$P_3$之间的竞争程度，故我们对其取竞争约束比，记为：
 \begin{equation}
 \begin{split}
     R_{23}(f) &= \frac{P_2}{P_3} 
-         = \frac{\Pi\cdot D_{hole}\cdot L_{bond}\cdot (0.25\eta M_Rf\cdot 10^{-2}+1.0)\cdot 10^{-3}}{\frac{10\delta_{max}\cdot \eta\cdot M_Rf\cdot 10^{-2}\cdot b^2}{(1-\nu^2)h_o}} \\
+         = \frac{\Pi\cdot D_{hole}\cdot L_{bond}\cdot (0.25\eta M_Rf\cdot 10^{-2}+1.0)\cdot 10^{-3}}{\frac{0.01\delta_{max}\cdot \eta\cdot M_Rf\cdot b^2}{(1-\nu^2)h_o}} \\
         &=\kappa_{23}\cdot(\alpha_\tau+\frac{1}{f})
 \end{split}
 \end{equation}
@@ -663,8 +747,9 @@ DOI: 10.1371/journal.pone.0351082.
 \bibitem{ivan2010eccentric}
 IVAN A.
 Pressures Distribution for Eccentrically Loaded Rectangular
-Footings on Elastic Soils[C].
-Mathematical Models for Engineering Science, 2010.
+Footings on Elastic Soils[C]//
+Mathematical Models for Engineering Science.
+2010: 213--216.
 
 \bibitem{lin2017ucs}
 林斌，徐冬.
