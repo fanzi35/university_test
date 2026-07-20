@@ -52,3 +52,38 @@ QUESTION1_2_FIXED_RESIDUAL_FIGURES = {
     "岩石工况": FIGURE_DIR / "question1_2_rock_fixed_residuals.png",
     "煤体工况": FIGURE_DIR / "question1_2_coal_fixed_residuals.png",
 }
+
+# ==================== 问题四：有效性与可靠性验证 ====================
+# 论文中的模量比与完整性折减系数基准值
+QUESTION4_MODULUS_RATIO = 300.0
+QUESTION4_INTEGRITY_FACTOR = 1.0
+
+# 论文式（49）的安全裕度系数 gamma：T_opt = gamma * Kd * min(P1, P2, P3)
+QUESTION4_SAFETY_MARGIN_FACTOR = 0.80
+
+# 单参数扰动幅度
+QUESTION4_SINGLE_PERTURBATIONS = (-0.20, -0.10, 0.10, 0.20)
+
+# 多参数随机扰动设置
+QUESTION4_MULTI_PERTURBATION_LEVELS = (0.10, 0.20)
+QUESTION4_MONTE_CARLO_SAMPLES = 5000
+QUESTION4_RANDOM_SEED = 20260720
+
+# 最坏情况：在所有参数的 ±20% 超矩形顶点中枚举最不利组合
+QUESTION4_WORST_CASE_LEVEL = 0.20
+
+# 最坏情况的稳健建议力矩同样使用 QUESTION4_SAFETY_MARGIN_FACTOR，
+# 避免再引入第二个含义重复的裕度系数。
+
+# 问题四输出路径
+QUESTION4_VALIDITY_FIGURE = FIGURE_DIR / "question4_validity_constraints.png"
+QUESTION4_SINGLE_PERTURBATION_FIGURE = FIGURE_DIR / "question4_single_parameter_sensitivity.png"
+QUESTION4_MONTE_CARLO_FIGURE = FIGURE_DIR / "question4_multi_parameter_monte_carlo.png"
+QUESTION4_WORST_CASE_FIGURE = FIGURE_DIR / "question4_worst_case_comparison.png"
+QUESTION4_CONSTRAINT_CURVES_FIGURE = FIGURE_DIR / "question4_constraint_curves.png"
+
+QUESTION4_VALIDITY_TABLE = TABLE_DIR / "question4_validity.csv"
+QUESTION4_SINGLE_PERTURBATION_TABLE = TABLE_DIR / "question4_single_parameter_perturbation.csv"
+QUESTION4_MONTE_CARLO_SUMMARY_TABLE = TABLE_DIR / "question4_monte_carlo_summary.csv"
+QUESTION4_MONTE_CARLO_WORST_TABLE = TABLE_DIR / "question4_monte_carlo_worst_samples.csv"
+QUESTION4_WORST_CASE_TABLE = TABLE_DIR / "question4_worst_case.csv"
