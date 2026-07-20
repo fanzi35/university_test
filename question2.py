@@ -162,7 +162,7 @@ def main() -> None:
         tray_side=180,
         max_indent_depth=1.5,
         influence_depth=900,
-        torque_conversion=6.611
+        torque_conversion=6.857
     )
 
     for condition in (condition_a, condition_b):
